@@ -23,14 +23,11 @@ class PlayGame{
 		this.ship.anchor.set(0.5, 0);
 		this.ship.destroyed = false;
 		game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-
-		//this.ship.animations.add('walk', [1, 2, 3, 4, 5, 6],12, false);
-		//this.ship.animations.play("walk");
+		
+		//ship animation
 		var walk = this.ship.animations.add('walk');
 		this.ship.animations.play('walk',20, true);
 
-		// don't need smoke emitters so commenting them out
-		/*
 		//smoke emitter and parameters
 		this.smokeEmitter = game.add.emitter((this.ship.x ), (this.ship.y ));
 		this.smokeEmitter.makeParticles("smoke");
@@ -38,8 +35,6 @@ class PlayGame{
 		this.smokeEmitter.setYSpeed(50, 150);
 		this.smokeEmitter.setAlpha(0.5, 1);
 		this.smokeEmitter.start(false, 1000, 40);
-		this.ship.destroyed = false;
-		*/
 
 		//hole properties
 		this.holeSpeed = HOLE_SPEED;
@@ -57,11 +52,10 @@ class PlayGame{
 	}
 
 	update(){
-		/*
+		
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
-		this.smokeEmitter.y = this.ship.y;
-		*/
+		
 		var obstacle = [this.fanGroup, this.holeGroup];
 
 		game.physics.arcade.collide(this.ship, obstacle, function(){
