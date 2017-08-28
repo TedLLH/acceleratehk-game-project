@@ -1,5 +1,4 @@
-
-const TUNNEL_WIDTH = document.window.width;
+const TUNNEL_WIDTH = 640;
 const SHIP_HORIZONTAL_SPEED = 100;
 const SHIP_MOVE_DELAY = 0;
 const SHIP_VERTICAL_SPEED = 0;
@@ -8,6 +7,7 @@ const HOLE_SPEED = 200;
 const BARRIER_DELAY = 1200;
 const BARRIER_INCREASE_SPEED = 1.1;
 const BARRIER_GAP = 120;
+const FAN_SPEED = 200;
 
 class PlayGame{
 	create(){
@@ -15,30 +15,31 @@ class PlayGame{
 		var tunnelBG = game.add.tileSprite(0,0,game.width,game.height,"tunnelbg");
 		tunnelBG.tint = tintColor;
 		console.log("playgame started");
-		this.shipPositions = [(game.width - TUNNEL_WIDTH)/2+32, (game.width + TUNNEL_WIDTH)/2-32]; 
-		this.ship = game.add.sprite(this.shipPositions[0],860,"ship");
-		this.ship.side = 0;
-		this.ship.anchor.set(0.5);
-		this.game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-		this.ship.canMove = true;
-		game.input.onDown.add(this.moveShip, this);
-		this.smokeEmitter = game.add.emitter(this.ship.x, this.ship.y + 10,20);
+
+		//ship and parameters
+		this.ship = game.add.sprite(320,720,"ship");
+		this.ship.inputEnabled = true;
+		this.ship.anchor.set(0.5, 0);
+
+		//smoke emitter and parameters
+		this.smokeEmitter = game.add.emitter((this.ship.x ), (this.ship.y));
 		this.smokeEmitter.makeParticles("smoke");
 		this.smokeEmitter.setXSpeed(-15, 15);
 		this.smokeEmitter.setYSpeed(50, 150);
 		this.smokeEmitter.setAlpha(0.5, 1);
 		this.smokeEmitter.start(false, 1000, 40);
-
-		this.holeSpeed = BARRIER_SPEED;
-		this.holeGroup = game.add.group();
-		// creating a constructor that will set the properties of the barrier
-		var hole = new Hole(game, barrierSpeed, tintColor);
-		// adds barrier to the game
-		game.add.existing(hole);
-		// adds every new barrier created from game.add.existing(barrier) to the barrier variable
-		this.barrierGroup.add(hole);
-
 		this.ship.destroyed = false;
+
+		// hole properties
+		this.holeSpeed = HOLE_SPEED;
+		this.holeGroup = game.add.group();
+		this.addHole(this.holeGroup, "hole");
+
+		
+		//fan properties
+		this.fanSpeed = FAN_SPEED;
+		this.fanGroup = game.add.group();
+		this.addFan(this.fanGroup, "fan");
 	}
 
 	update(){
@@ -47,51 +48,55 @@ class PlayGame{
 
 		game.physics.arcade.collide(this.ship, this.barrierGroup, function(s, b){
 			console.log("collision between ship and barrier");
-			});
-		
-		restartShip(){
-			if(!this.ship.destroyed && this.ship.alpha == 1){
-				this.barrierSpeed *= BARRIER_INCREASE_SPEED;
-				for(let i = 0; i < this.barrierGroup.length; i++){
-					this.barrierGroup.getChildAt(i).body.velocity.y = this.barrierSpeed;
-				}
-				this.ship.canSwipe = false;
-				this.verticalTween.stop();
-				this.ship.alpha = 0.5;
-				this.verticalTween = game.add.tween(this.ship).to({
-					y: 860
-				}, 100, Phaser.Easing.Linear.None, true);
-				this.verticalTween.onComplete.add(function(){
-					this.verticalTween = game.add.tween(this.ship).to({
-						y: 0
-					}, SHIP_VERTICAL_SPEED, Phaser.Easing.Linear.None, true);
-					var alphaTween = game.add.tween(this.ship).to({
-						alpha: 1
-					}, SHIP_INVISIBILITY_TIME, Phaser.Easing.Bounce.In, true);
-				}, this)
-			}
-		}
+			})
 
-		// time tracker
-		var thisTime = new Date();
-		var diff = (thisTime.getTime() - this.startingTime.getTime())/1000;
-		this.score.text = diff
-
-		if (this.game.physics.ARCADE.)
+		// make the ship follow the mouse from side to side
+		this.ship.x = game.input.activePointer.position.x;
 	}
 
-	moveShip(){
-		if(this.ship.canMove){
-			this.ship.canMove = false;
-			this.ship.side = 1 - this.ship.side;
-			var horizontalTween = game.add.tween(this.ship).to({
-				x: this.shipPositions[this.ship.side]
-			}, SHIP_HORIZONTAL_SPEED, Phaser.Easing.Linear.None, true);
-			horizontalTween.onComplete.add(function(){
-				game.time.events.add(SHIP_MOVE_DELAY,function(){
-				this.ship.canMove = true;
-				}, this);
-			}, this);
+	addFan(group){
+		let fan = new Fan(game, FAN_SPEED,this);
+		game.add.existing(fan);
+		group.add(fan);
+		fan.scale.setTo(0.1,0.1);
+	}
+
+	addHole(group){
+		let hole = new Hole(game, HOLE_SPEED, this);
+		game.add.existing(hole);
+		group.add(hole);
+		hole.scale.setTo(0.1,0.1);
+	}
+}
+
+// Fan class	
+class Fan extends Phaser.Sprite{
+constructor(game, speed, playGame) {
+
+	//randomise fan positions
+	let fanPositions = 
+	[Math.floor(Math.random() * (600 - 100)) + 100, 
+	Math.floor(Math.random() * (600 - 100)) + 100];
+	let fanPosition = game.rnd.between(0, 1);
+	super(game, fanPositions[fanPosition], -100, "fan");
+	this.playGame = playGame;
+
+	//enable phaser ARCADE physics
+	game.physics.enable(this, Phaser.Physics.ARCADE);
+	this.anchor.set(0.5);
+	this.body.velocity.y = speed;
+	this.placeFan = true;
+
+	//make fan image not movable upon collision
+	this.body.immovable = true;
+};
+
+	update(){
+
+		//generate fan image continuously
+		if (this.placeFan && this.y > BARRIER_GAP){
+			this.placeFan = false;
+			this.playGame.addFan(this.parent, "fan");
 		}
 
 		// don't need ghostShip because no point we'll have sprites instead
