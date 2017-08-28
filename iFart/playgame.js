@@ -5,6 +5,8 @@ const SHIP_MOVE_DELAY = 0;
 const SHIP_VERTICAL_SPEED = 0;
 const SWIPE_DISTANCE = 10;
 
+const BARRIER_GAP = 120;
+
 const FAN_SPEED = 200;
 
 class PlayGame{
@@ -83,3 +85,4 @@ constructor(game, speed,playGame) {
 			this.destroy();
 		}
 	}
+}
