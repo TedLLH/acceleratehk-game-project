@@ -9,6 +9,7 @@ const BARRIER_INCREASE_SPEED = 1.1;
 const BARRIER_GAP = 120;
 const FAN_SPEED = 200;
 
+
 class PlayGame{
 	create(){
 		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
@@ -21,8 +22,13 @@ class PlayGame{
 		this.ship.inputEnabled = true;
 		this.ship.anchor.set(0.5, 0);
 
+		//this.ship.animations.add('walk', [1, 2, 3, 4, 5, 6],12, false);
+		//this.ship.animations.play("walk");
+		var walk = this.ship.animations.add('walk');
+		this.ship.animations.play('walk',20, true);
+
 		//smoke emitter and parameters
-		this.smokeEmitter = game.add.emitter((this.ship.x ), (this.ship.y));
+		this.smokeEmitter = game.add.emitter((this.ship.x ), (this.ship.y ));
 		this.smokeEmitter.makeParticles("smoke");
 		this.smokeEmitter.setXSpeed(-15, 15);
 		this.smokeEmitter.setYSpeed(50, 150);
@@ -40,11 +46,12 @@ class PlayGame{
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
+
 	}
 
 	update(){
 		this.smokeEmitter.x = this.ship.x;
-		this.smokeEmitter.y = this.ship.y;
+		this.smokeEmitter.y = this.ship.y + 70;
 
 		game.physics.arcade.collide(this.ship, this.barrierGroup, function(s, b){
 			console.log("collision between ship and barrier");
@@ -52,6 +59,7 @@ class PlayGame{
 
 		// make the ship follow the mouse from side to side
 		this.ship.x = game.input.activePointer.position.x;
+		this.mousePointer = null;
 	}
 
 	addFan(group){
