@@ -48,9 +48,9 @@ class PlayGame{
 		this.addFan(this.fanGroup, "fan");
 
 		//sorting all obstacles in array for convenience
-		
+		document.getElementById("all").style.cursor = "none";
 	}
-
+	
 	update(){
 		
 		this.smokeEmitter.x = this.ship.x;
