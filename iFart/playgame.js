@@ -14,7 +14,7 @@ class PlayGame{
 		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
 		var tunnelBG = game.add.tileSprite(0,0,game.width,game.height,"tunnelbg");
 		tunnelBG.tint = tintColor;
-		console.log("playgame started");
+		console.log("playgame started"); 
 
 		//ship and parameters
 		this.ship = game.add.sprite(320,720,"ship");
@@ -33,6 +33,9 @@ class PlayGame{
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
+
+		//add rectangle
+		rectA = new Phaser.Rectangle(0, 0, 200, 100);
 	}
 
 	update(){
@@ -41,6 +44,10 @@ class PlayGame{
 
 		// make the ship follow the mouse from side to side
 		this.ship.x = game.input.activePointer.position.x;
+
+		//make rectangle intersects with the fan image
+		this.rectA.x = this.fanGroup.x;
+		this.rectA.y = this.fanGroup.y;
 	}
 	//addFan
 	addFan(group){
