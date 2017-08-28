@@ -1,12 +1,12 @@
-
 const TUNNEL_WIDTH = 640;
 const SHIP_HORIZONTAL_SPEED = 100;
 const SHIP_MOVE_DELAY = 0;
 const SHIP_VERTICAL_SPEED = 0;
 const SWIPE_DISTANCE = 10;
-
+const HOLE_SPEED = 200;
+const BARRIER_DELAY = 1200;
+const BARRIER_INCREASE_SPEED = 1.1;
 const BARRIER_GAP = 120;
-
 const FAN_SPEED = 200;
 
 class PlayGame{
@@ -28,7 +28,14 @@ class PlayGame{
 		this.smokeEmitter.setYSpeed(50, 150);
 		this.smokeEmitter.setAlpha(0.5, 1);
 		this.smokeEmitter.start(false, 1000, 40);
+		this.ship.destroyed = false;
 
+		// hole properties
+		this.holeSpeed = HOLE_SPEED;
+		this.holeGroup = game.add.group();
+		this.addHole(this.holeGroup, "hole");
+
+		
 		//fan properties
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
@@ -42,6 +49,10 @@ class PlayGame{
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y;
 
+		game.physics.arcade.collide(this.ship, this.barrierGroup, function(s, b){
+			console.log("collision between ship and barrier");
+			})
+
 		// make the ship follow the mouse from side to side
 		this.ship.x = game.input.activePointer.position.x;
 
@@ -49,18 +60,25 @@ class PlayGame{
 		this.rectA.x = this.fanGroup.x;
 		this.rectA.y = this.fanGroup.y;
 	}
-	//addFan
+
 	addFan(group){
-	let fan = new Fan(game, FAN_SPEED,this);
-	game.add.existing(fan);
-	group.add(fan);
-	fan.scale.setTo(0.1,0.1);
+		let fan = new Fan(game, FAN_SPEED,this);
+		game.add.existing(fan);
+		group.add(fan);
+		fan.scale.setTo(0.1,0.1);
+	}
+
+	addHole(group){
+		let hole = new Hole(game, HOLE_SPEED, this);
+		game.add.existing(hole);
+		group.add(hole);
+		hole.scale.setTo(0.1,0.1);
 	}
 }
 
 // Fan class	
 class Fan extends Phaser.Sprite{
-constructor(game, speed,playGame) {
+constructor(game, speed, playGame) {
 
 	//randomise fan positions
 	let fanPositions = 
@@ -79,6 +97,7 @@ constructor(game, speed,playGame) {
 	//make fan image not movable upon collision
 	this.body.immovable = true;
 };
+
 	update(){
 
 		//generate fan image continuously
@@ -87,7 +106,38 @@ constructor(game, speed,playGame) {
 			this.playGame.addFan(this.parent, "fan");
 		}
 
-		//destroy fan image after passing the screen to improve performances
+		// don't need ghostShip because no point we'll have sprites instead
+		/* let ghostShip = game.add.sprite(this.ship.x, this.ship.y, "ship");
+		ghostShip.alpha = 0.5;
+		ghostShip.anchor.set(0.5);
+		let ghostTween = game.add.tween(ghostShip).to({
+			alpha: 0
+		}, 350, Phaser.Easing.Linear.None, true);
+		ghostTween.onComplete.add(function(){
+			ghostShip.destroy();
+		}) */
+	}
+}
+
+class Hole extends Phaser.Sprite{
+	constructor(game, speed, playGame){
+		let holePositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
+		let holePosition = game.rnd.between(0,1);
+		super(game, holePositions[holePosition], -100, "hole");
+		this.playGame = playGame;
+		game.physics.enable(this, Phaser.Physics.ARCADE);
+		this.anchor.set(0.5);
+		this.body.velocity.y = speed;
+		this.placeHole = true;
+		this.body.immovable = true;
+	};
+
+	update(){
+		if(this.placeHole && this.y > BARRIER_GAP){
+			this.placeHole = false;
+			this.playGame.addHole(this.parent, "hole");
+		}
+
 		if(this.y > game.height){
 			this.destroy();
 		}
