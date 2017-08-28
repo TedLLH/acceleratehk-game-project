@@ -21,12 +21,16 @@ class PlayGame{
 		this.ship = game.add.sprite(320,720,"ship");
 		this.ship.inputEnabled = true;
 		this.ship.anchor.set(0.5, 0);
+		this.ship.destroyed = false;
+		game.physics.enable(this.ship, Phaser.Physics.ARCADE);
 
 		//this.ship.animations.add('walk', [1, 2, 3, 4, 5, 6],12, false);
 		//this.ship.animations.play("walk");
 		var walk = this.ship.animations.add('walk');
 		this.ship.animations.play('walk',20, true);
 
+		// don't need smoke emitters so commenting them out
+		/*
 		//smoke emitter and parameters
 		this.smokeEmitter = game.add.emitter((this.ship.x ), (this.ship.y ));
 		this.smokeEmitter.makeParticles("smoke");
@@ -35,8 +39,9 @@ class PlayGame{
 		this.smokeEmitter.setAlpha(0.5, 1);
 		this.smokeEmitter.start(false, 1000, 40);
 		this.ship.destroyed = false;
+		*/
 
-		// hole properties
+		//hole properties
 		this.holeSpeed = HOLE_SPEED;
 		this.holeGroup = game.add.group();
 		this.addHole(this.holeGroup, "hole");
@@ -47,23 +52,28 @@ class PlayGame{
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
 
+		//sorting all obstacles in array for convenience
+		
 	}
 
 	update(){
+		/*
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
+		this.smokeEmitter.y = this.ship.y;
+		*/
+		var obstacle = [this.fanGroup, this.holeGroup];
 
-		game.physics.arcade.collide(this.ship, this.barrierGroup, function(s, b){
-			console.log("collision between ship and barrier");
-			})
-
+		game.physics.arcade.collide(this.ship, obstacle, function(){
+			game.state.start("PlayGame");
+		});
 		// make the ship follow the mouse from side to side
 		this.ship.x = game.input.activePointer.position.x;
 		this.mousePointer = null;
 	}
 
 	addFan(group){
-		let fan = new Fan(game, FAN_SPEED,this);
+		let fan = new Fan(game, FAN_SPEED, this);
 		game.add.existing(fan);
 		group.add(fan);
 		fan.scale.setTo(0.1,0.1);
@@ -73,7 +83,7 @@ class PlayGame{
 		let hole = new Hole(game, HOLE_SPEED, this);
 		game.add.existing(hole);
 		group.add(hole);
-		hole.scale.setTo(0.1,0.1);
+		hole.scale.setTo(0.3,0.3);
 	}
 }
 
@@ -82,9 +92,7 @@ class Fan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
 
 	//randomise fan positions
-	let fanPositions = 
-	[Math.floor(Math.random() * (600 - 100)) + 100, 
-	Math.floor(Math.random() * (600 - 100)) + 100];
+	let fanPositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
 	let fanPosition = game.rnd.between(0, 1);
 	super(game, fanPositions[fanPosition], -100, "fan");
 	this.playGame = playGame;
@@ -100,7 +108,6 @@ constructor(game, speed, playGame) {
 };
 
 	update(){
-
 		//generate fan image continuously
 		if (this.placeFan && this.y > BARRIER_GAP){
 			this.placeFan = false;
@@ -120,6 +127,7 @@ constructor(game, speed, playGame) {
 	}
 }
 
+// hole class
 class Hole extends Phaser.Sprite{
 	constructor(game, speed, playGame){
 		let holePositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];

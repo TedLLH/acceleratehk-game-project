@@ -9,6 +9,7 @@ window.onload = () => {
 	game.state.start("Boot");
 	game.state.add("TitleScreen",TitleScreen);
 	game.state.add("PlayGame", PlayGame);
+	game.state.add("GameOverScreen", GameOverScreen)
 }
 
 class Boot{
