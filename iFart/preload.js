@@ -9,7 +9,8 @@ class Preload{
 		game.load.image("tunnelbg", "assets/sprites/tunnelbg.png");
 		game.load.image("wall", "assets/sprites/wall.png");
 		game.load.image("ship", "assets/sprites/ship.png");
-		game.load.image("smoke", "assets/sprites/smoke.png")
+		game.load.image("smoke", "assets/sprites/smoke.png");
+		game.load.image("hole", "assets/sprites/hole.png")
 	}
 
 	create(){
