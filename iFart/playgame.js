@@ -17,10 +17,9 @@ const TRANSPARENT_SPEED = 200;
 class PlayGame{
 
 	create(){
-		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
-		var tunnelBG = game.add.tileSprite(0,0,game.width,game.height,"tunnelbg");
-		tunnelBG.tint = tintColor;
-		console.log("playgame started"); 
+
+		this.background = game.add.tileSprite(0,0,game.width,game.height,"export");
+		console.log("playgame started");
 
 		//ship and parameters
 		this.ship = game.add.sprite(320,720,"ship");
@@ -82,6 +81,7 @@ class PlayGame{
 
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
+		this.background.tilePosition.y += 8;
 		
 		var obstacle = [this.holeGroup];
 
