@@ -67,6 +67,19 @@ class PlayGame{
 	
 	update(){
 		
+		if (this.cursors.left.isDown) {
+			this.ship.body.x -= 6;
+		}
+		if (this.cursors.right.isDown) {
+			this.ship.body.x += 6;
+		}
+		if (this.cursors.up.isDown) {
+			this.ship.body.y -= 6;
+		}
+		if (this.cursors.down.isDown) {
+			this.ship.body.y += 6;
+		}
+
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
 		
@@ -96,7 +109,7 @@ class PlayGame{
 					});
 				}, this);
 			}, null, this)
-
+		}	
 			//ship hit blowright fan
 			if(game.physics.arcade.overlap(this.fanGroup, this.ship))
 			{
@@ -114,20 +127,6 @@ class PlayGame{
 					//y: this.ship.y,
 				}, 1000, Phaser.Easing.Linear.None, true);
 			}
-		}
-
-				if (this.cursors.left.isDown) {
-					this.ship.body.x -= 6;
-				}
-				if (this.cursors.right.isDown) {
-					this.ship.body.x += 6;
-				}
-				if (this.cursors.up.isDown) {
-					this.ship.body.y -= 6;
-				}
-				if (this.cursors.down.isDown) {
-					this.ship.body.y += 6;
-				}
 
 		/*
 		game.physics.arcade.collide(this.ship, obstacle, function(){
