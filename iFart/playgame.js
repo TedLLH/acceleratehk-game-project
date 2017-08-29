@@ -8,8 +8,12 @@ const BARRIER_DELAY = 1200;
 const BARRIER_INCREASE_SPEED = 1.1;
 const BARRIER_GAP = 120;
 const FAN_SPEED = 200;
+const TRANSPARENT_SPEED = 200;
+
+let transparent 
 
 class PlayGame{
+
 	create(){
 		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
 		var tunnelBG = game.add.tileSprite(0,0,game.width,game.height,"tunnelbg");
@@ -30,19 +34,21 @@ class PlayGame{
 		this.smokeEmitter.start(false, 1000, 40);
 		this.ship.destroyed = false;
 
+
 		// hole properties
 		this.holeSpeed = HOLE_SPEED;
 		this.holeGroup = game.add.group();
 		this.addHole(this.holeGroup, "hole");
-
 		
 		//fan properties
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
 
-		//add rectangle
-		rectA = new Phaser.Rectangle(0, 0, 200, 100);
+		//transparent properties
+		this.transparentSpeed = TRANSPARENT_SPEED;
+		this.transparentGroup = game.add.group();
+		this.addTransparent(this.transparentGroup, "transparent");
 	}
 
 	update(){
@@ -55,50 +61,53 @@ class PlayGame{
 
 		// make the ship follow the mouse from side to side
 		this.ship.x = game.input.activePointer.position.x;
-
-		//make rectangle intersects with the fan image
-		this.rectA.x = this.fanGroup.x;
-		this.rectA.y = this.fanGroup.y;
 	}
-
 	addFan(group){
 		let fan = new Fan(game, FAN_SPEED,this);
 		game.add.existing(fan);
 		group.add(fan);
 		fan.scale.setTo(0.1,0.1);
 	}
-
 	addHole(group){
 		let hole = new Hole(game, HOLE_SPEED, this);
 		game.add.existing(hole);
 		group.add(hole);
 		hole.scale.setTo(0.1,0.1);
 	}
+	addTransparent(group){
+		let transparent = new Transparent(game, TRANSPARENT_SPEED, this);
+		game.add.existing(transparent);
+		group.add(transparent);
+		transparent.scale.setTo(0.1,0.1);
+	}
 }
 
 // Fan class	
 class Fan extends Phaser.Sprite{
-constructor(game, speed, playGame) {
+	constructor(game, speed, playGame) {
 
-	//randomise fan positions
-	let fanPositions = 
-	[Math.floor(Math.random() * (600 - 100)) + 100, 
-	Math.floor(Math.random() * (600 - 100)) + 100];
-	let fanPosition = game.rnd.between(0, 1);
-	super(game, fanPositions[fanPosition], -100, "fan");
-	this.playGame = playGame;
+		//randomise fan positions
+		let fanPositions = 
+		[Math.floor(Math.random() * (600 - 100)) + 100, 
+		Math.floor(Math.random() * (600 - 100)) + 100];
+		let fanPosition = game.rnd.between(0, 1);
+		super(game, fanPositions[fanPosition], -100, "fan");
+		this.playGame = playGame;
 
-	//enable phaser ARCADE physics
-	game.physics.enable(this, Phaser.Physics.ARCADE);
-	this.anchor.set(0.5);
-	this.body.velocity.y = speed;
-	this.placeFan = true;
+		//enable phaser ARCADE physics
+		game.physics.enable(this, Phaser.Physics.ARCADE);
+		this.anchor.set(0.5);
+		this.body.velocity.y = speed;
+		this.placeFan = true;
 
-	//make fan image not movable upon collision
-	this.body.immovable = true;
-};
-
+		//make fan image not movable upon collision
+		this.body.immovable = true;
+	};
 	update(){
+		let fanPositions = 
+		[Math.floor(Math.random() * (600 - 100)) + 100, 
+		Math.floor(Math.random() * (600 - 100)) + 100];
+		let fanPosition = game.rnd.between(0, 1);
 
 		//generate fan image continuously
 		if (this.placeFan && this.y > BARRIER_GAP){
@@ -131,6 +140,30 @@ class Hole extends Phaser.Sprite{
 		this.placeHole = true;
 		this.body.immovable = true;
 	};
+
+	update(){
+		if(this.placeHole && this.y > BARRIER_GAP){
+			this.placeHole = false;
+			this.playGame.addHole(this.parent, "hole");
+		}
+
+		if(this.y > game.height){
+			this.destroy();
+		}
+	}
+}
+
+class Transparent extends Phaser.Sprite{
+	constructor(game, speed, playGame){
+		let transparentPositions = (fanPositions[fanPosition]);
+		super(game, transparentPositions, -100, "transparent");
+		this.playGame = playGame;
+		game.physics.enable(this, Phaser.Physics.ARCADE);
+		this.anchor.set(0.5);
+		this.body.velocity.y = speed;
+		this.placeTransparent = true;
+		this.body.immovable = true;
+	}
 
 	update(){
 		if(this.placeHole && this.y > BARRIER_GAP){

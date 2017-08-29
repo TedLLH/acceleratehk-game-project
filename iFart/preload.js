@@ -12,6 +12,8 @@ class Preload{
 		game.load.image("smoke", "assets/sprites/smoke.png");
 		game.load.image("hole", "assets/sprites/hole.png")
 		game.load.image("fan", "assets/sprites/fan.png");
+		game.load.image("transparent", "assets/sprites/transparent.png");
+
 	}
 
 	create(){
