@@ -15,7 +15,6 @@ class GameOverScreen{
 		
 		//document.getElementById("all").style.cursor = "pointer";
 	}
-
 	startGame(){
 		game.state.start("PlayGame");
 	}
