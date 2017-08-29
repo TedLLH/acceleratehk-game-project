@@ -50,10 +50,14 @@ class PlayGame{
 		this.holeGroup = game.add.group();
 		this.addHole(this.holeGroup, "hole");
 		
-		//fan properties
+		//fan properties (blowright)
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
+
+		////fan properties (blowleft)
+		this.blowLeftFanGroup = game.add.group();
+		this.addBlowLeftFan(this.blowLeftFanGroup, "blowLeftFan");
 
 		this.cursors = game.input.keyboard.createCursorKeys();
 		//sorting all obstacles in array for convenience
@@ -93,15 +97,37 @@ class PlayGame{
 				}, this);
 			}, null, this)
 
-			//ship hit fan rectangle
+			//ship hit blowright fan
 			if(game.physics.arcade.overlap(this.fanGroup, this.ship))
-			{console.log("crash");
-				let moveTwen = game.add.tween(this.ship).to({
+			{
+				let moveTween = game.add.tween(this.ship).to({
 					x: this.ship.x + 100,
 					//y: this.ship.y,
 				}, 1000, Phaser.Easing.Linear.None, true);
 			}
+
+			//ship hit blowleft fan
+			if(game.physics.arcade.overlap(this.blowLeftFanGroup, this.ship))
+			{
+				let moveTween = game.add.tween(this.ship).to({
+					x: this.ship.x - 100,
+					//y: this.ship.y,
+				}, 1000, Phaser.Easing.Linear.None, true);
+			}
 		}
+
+				if (this.cursors.left.isDown) {
+					this.ship.body.x -= 6;
+				}
+				if (this.cursors.right.isDown) {
+					this.ship.body.x += 6;
+				}
+				if (this.cursors.up.isDown) {
+					this.ship.body.y -= 6;
+				}
+				if (this.cursors.down.isDown) {
+					this.ship.body.y += 6;
+				}
 
 		/*
 		game.physics.arcade.collide(this.ship, obstacle, function(){
@@ -117,34 +143,20 @@ class PlayGame{
 
 		//game.add.sprite(0, 0, "box").alignTo(fan, Phaser.RIGHT_CENTER);
 		//ship hit fan rectangle
-        var blow = game.physics.arcade.collide(this.ship, this.fanGroup, function (s,b)
-            {
-                let moveTwen = game.add.tween(this.ship).to({
-                    x: this.ship.x + 150,
-                    y: this.ship.y - 20,
-                }, 200, Phaser.Easing.Linear.None, true);
-			}, null, this)
-		
-		if (blow == false){
-			if (this.cursors.left.isDown) {
-				this.ship.body.x -= 6;
-			}
-			if (this.cursors.right.isDown) {
-				this.ship.body.x += 6;
-			}
-			if (this.cursors.up.isDown) {
-				this.ship.body.y -= 6;
-			}
-			if (this.cursors.down.isDown) {
-				this.ship.body.y += 6;
-			}else{
-				this.game.input.disabled = true;
-			}
-		}
-	
+        // var blow = game.physics.arcade.collide(this.ship, this.fanGroup, function (s,b)
+        //     {
+        //         let moveTwen = game.add.tween(this.ship).to({
+        //             x: this.ship.x + 150,
+        //             y: this.ship.y - 20,
+        //         }, 200, Phaser.Easing.Linear.None, true);
+		// 	}, null, this)
 	}
-	
-
+	addBlowLeftFan(group){
+		let blowleftfan = new blowLeftFan(game, FAN_SPEED, this);
+		game.add.existing(blowleftfan);
+		group.add(blowleftfan);
+		blowleftfan.scale.setTo(0.1,0.1);
+	}
 	addFan(group){
 		let fan = new Fan(game, FAN_SPEED, this);
 		game.add.existing(fan);
@@ -170,7 +182,7 @@ class PlayGame{
 }
 
 
-// Fan class	
+// blow right fan class	
 class Fan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
 
@@ -186,7 +198,6 @@ constructor(game, speed, playGame) {
 	this.body.velocity.y = speed;
 	this.placeFan = true;
 
-
 	//make fan image not movable upon collision
 	this.body.immovable = true;
 };
@@ -194,6 +205,37 @@ constructor(game, speed, playGame) {
 		if(this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
 			this.playGame.addFan(this.parent, "Fan");
+		}
+
+		if(this.y > game.height){
+			this.destroy();
+		}
+	}
+}
+
+//blow left fan class
+class blowLeftFan extends Phaser.Sprite{
+constructor(game, speed, playGame) {
+
+	//randomise blow left fan positions
+	let blowLeftFanPositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
+	let blowLeftFanPosition = game.rnd.between(0, 1);
+	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "fan");
+	this.playGame = playGame;
+
+	//enable phaser ARCADE physics
+	game.physics.enable(this, Phaser.Physics.ARCADE);
+	this.anchor.set(0.5);
+	this.body.velocity.y = speed;
+	this.placeFan = true;
+
+	//make fan image not movable upon collision
+	this.body.immovable = true;
+};
+	update(){
+		if(this.placeFan && this.y > FAN_GAP){
+			this.placeFan = false;
+			this.playGame.addFan(this.parent, "blowLeftFan");
 		}
 
 		if(this.y > game.height){
