@@ -4,9 +4,9 @@ const SHIP_MOVE_DELAY = 0;
 const SHIP_VERTICAL_SPEED = 0;
 const SWIPE_DISTANCE = 10;
 const HOLE_SPEED = 200;
-const BARRIER_DELAY = 1200;
 const BARRIER_INCREASE_SPEED = 1.1;
-const BARRIER_GAP = 120;
+const HOLE_GAP = 100;
+const FAN_GAP = 300;
 const FAN_SPEED = 200;
 
 
@@ -61,9 +61,40 @@ class PlayGame{
 		
 		var obstacle = [this.holeGroup];
 
+		if(!this.ship.destroyed){
+			game.physics.arcade.collide(this.ship, obstacle, function(s, b)
+				{
+				this.ship.destroyed = true
+				this.smokeEmitter.destroy();
+				let destroyTween = game.add.tween(this.ship).to({
+					x: this.ship.x + game.rnd.between(-100, 100),
+					y: this.ship.y - 100,
+					rotation: 10
+				}, 1000, Phaser.Easing.Linear.None, true);
+				destroyTween.onComplete.add(function(){
+					let explosionEmitter = game.add.emitter(this.ship.x,
+						this.ship.y, 200);
+					explosionEmitter.makeParticles("smoke");
+					explosionEmitter.setAlpha(0.5, 1);
+					explosionEmitter.minParticleScale = 0.5;
+					explosionEmitter.maxParticleScale = 2;
+					explosionEmitter.start(true, 2000, null, 200);
+					this.ship.destroy();
+					game.time.events.add(Phaser.Timer.SECOND * 2, function() {
+						game.state.start("GameOverScreen");
+					});
+				}, this);
+			}, null, this)
+		}
+
+		/*
 		game.physics.arcade.collide(this.ship, obstacle, function(){
-			game.state.start("PlayGame");
+			if(this.ship.destroyed = false){
+				this.ship.destroyed = true;
+				game.state.start("GameOverScreen");
+			}
 		});
+		*/
 		// make the ship follow the mouse from side to side
 		//this.ship.x = game.input.activePointer.position.x;
 		this.mousePointer = null;
@@ -108,15 +139,13 @@ class PlayGame{
 		group.add(hole);
 		hole.scale.setTo(0.3,0.3);
 	}
-	addBox(group){
-		let box = new Box(game, FAN_SPEED, this);
-		game.add.existing(box);
-		group.add(box);
-		hole.scale.setTo(0.3,0.3);
-	}
-	
 
+	updateScore(){
+		if (this.shi){}
+	}
 }
+
+
 // Fan class	
 class Fan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
@@ -140,7 +169,7 @@ constructor(game, speed, playGame) {
 
 	update(){
 		//generate fan image continuously
-		if (this.placeFan && this.y > BARRIER_GAP){
+		if (this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
 			this.playGame.addFan(this.parent, "fan");
 		}
@@ -163,7 +192,7 @@ class Hole extends Phaser.Sprite{
 	};
 
 	update(){
-		if(this.placeHole && this.y > BARRIER_GAP){
+		if(this.placeHole && this.y > HOLE_GAP){
 			this.placeHole = false;
 			this.playGame.addHole(this.parent, "hole");
 		}
@@ -173,3 +202,13 @@ class Hole extends Phaser.Sprite{
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+
+// We need to create a 5 column system which will randomly generate whether it's a fan or a hole.
+// This system is better because it makes gameplay more structured: prevents overlapping, ...
+/*
+let holePositions = [ 1 , 2 , 3 , 4 , 5 ]
+let holePosition = game.rnd.between(0,4);
+*/
+>>>>>>> 798f35e9003321d6a1320c17ba209f8e854d0595
