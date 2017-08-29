@@ -10,6 +10,7 @@ const BARRIER_GAP = 120;
 const FAN_SPEED = 200;
 
 
+
 class PlayGame{
 	create(){
 		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
@@ -19,7 +20,7 @@ class PlayGame{
 
 		//ship and parameters
 		this.ship = game.add.sprite(320,720,"ship");
-		this.ship.inputEnabled = true;
+		this.ship.enableBody = true;
 		this.ship.anchor.set(0.5, 0);
 		this.ship.destroyed = false;
 		game.physics.enable(this.ship, Phaser.Physics.ARCADE);
@@ -47,8 +48,10 @@ class PlayGame{
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
 
+		this.cursors = game.input.keyboard.createCursorKeys();
 		//sorting all obstacles in array for convenience
 		document.getElementById("all").style.cursor = "none";
+
 	}
 	
 	update(){
@@ -56,15 +59,41 @@ class PlayGame{
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
 		
-		var obstacle = [this.fanGroup, this.holeGroup];
+		var obstacle = [this.holeGroup];
 
 		game.physics.arcade.collide(this.ship, obstacle, function(){
 			game.state.start("PlayGame");
 		});
 		// make the ship follow the mouse from side to side
-		this.ship.x = game.input.activePointer.position.x;
+		//this.ship.x = game.input.activePointer.position.x;
 		this.mousePointer = null;
-	}
+
+		//game.add.sprite(0, 0, "box").alignTo(fan, Phaser.RIGHT_CENTER);
+		//ship hit fan rectangle
+        var blow = game.physics.arcade.collide(this.ship, this.fanGroup, function (s,b)
+            {
+                let moveTwen = game.add.tween(this.ship).to({
+                    x: this.ship.x + 100,
+                    //y: this.ship.y - 300,
+                }, 200, Phaser.Easing.Linear.None, true);
+			}, null, this)
+		
+
+			if (this.cursors.left.isDown) {
+				this.ship.body.x -= 6;
+			}
+			if (this.cursors.right.isDown) {
+				this.ship.body.x += 6;
+			}
+			if (this.cursors.up.isDown) {
+				this.ship.body.y -= 6;
+			}
+			if (this.cursors.down.isDown) {
+				this.ship.body.y += 6;
+			
+			}
+		}
+	
 
 	addFan(group){
 		let fan = new Fan(game, FAN_SPEED, this);
@@ -79,8 +108,15 @@ class PlayGame{
 		group.add(hole);
 		hole.scale.setTo(0.3,0.3);
 	}
-}
+	addBox(group){
+		let box = new Box(game, FAN_SPEED, this);
+		game.add.existing(box);
+		group.add(box);
+		hole.scale.setTo(0.3,0.3);
+	}
+	
 
+}
 // Fan class	
 class Fan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
@@ -97,6 +133,7 @@ constructor(game, speed, playGame) {
 	this.body.velocity.y = speed;
 	this.placeFan = true;
 
+
 	//make fan image not movable upon collision
 	this.body.immovable = true;
 };
@@ -107,17 +144,7 @@ constructor(game, speed, playGame) {
 			this.placeFan = false;
 			this.playGame.addFan(this.parent, "fan");
 		}
-
-		// don't need ghostShip because no point we'll have sprites instead
-		/* let ghostShip = game.add.sprite(this.ship.x, this.ship.y, "ship");
-		ghostShip.alpha = 0.5;
-		ghostShip.anchor.set(0.5);
-		let ghostTween = game.add.tween(ghostShip).to({
-			alpha: 0
-		}, 350, Phaser.Easing.Linear.None, true);
-		ghostTween.onComplete.add(function(){
-			ghostShip.destroy();
-		}) */
+		
 	}
 }
 
