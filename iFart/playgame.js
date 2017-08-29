@@ -13,9 +13,8 @@ const FAN_SPEED = 200;
 
 class PlayGame{
 	create(){
-		var tintColor = BG_COLORS[game.rnd.between(0, BG_COLORS.length - 1)]
-		var tunnelBG = game.add.tileSprite(0,0,game.width,game.height,"tunnelbg");
-		tunnelBG.tint = tintColor;
+
+		this.background = game.add.tileSprite(0,0,game.width,game.height,"export");
 		console.log("playgame started");
 
 		//ship and parameters
@@ -58,6 +57,7 @@ class PlayGame{
 		
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
+		this.background.tilePosition.y += 8;
 		
 		var obstacle = [this.holeGroup];
 
@@ -202,8 +202,6 @@ class Hole extends Phaser.Sprite{
 		}
 	}
 }
-<<<<<<< HEAD
-=======
 
 // We need to create a 5 column system which will randomly generate whether it's a fan or a hole.
 // This system is better because it makes gameplay more structured: prevents overlapping, ...
@@ -211,4 +209,3 @@ class Hole extends Phaser.Sprite{
 let holePositions = [ 1 , 2 , 3 , 4 , 5 ]
 let holePosition = game.rnd.between(0,4);
 */
->>>>>>> 798f35e9003321d6a1320c17ba209f8e854d0595

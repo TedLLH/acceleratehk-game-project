@@ -15,6 +15,7 @@ class Preload{
 		game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
 		game.load.spritesheet("ship", "assets/sprites/man.png", 62, 90);
 		game.load.image("box", "assets/sprites/barrier.png");
+		game.load.image("export", "assets/sprites/export.png");
 	}
 
 	create(){
