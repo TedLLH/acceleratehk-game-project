@@ -9,12 +9,13 @@ class Preload{
 		game.load.image("tunnelbg", "assets/sprites/tunnelbg.png");
 		game.load.image("wall", "assets/sprites/wall.png");
 		game.load.image("man", "assets/sprites/ship.png");
-		game.load.image("smoke", "assets/sprites/smoke2.png");
+		game.load.image("smoke", "assets/sprites/smoke3.png");
 		game.load.image("hole", "assets/sprites/hole.png")
 		game.load.image("fan", "assets/sprites/blowright.png");
 		game.load.image("transparent", "assets/sprites/transparent.png");
 		game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
 		game.load.spritesheet("ship", "assets/sprites/man.png", 62, 90);
+		game.load.image("box", "assets/sprites/barrier.png");
 	}
 	
 	create(){

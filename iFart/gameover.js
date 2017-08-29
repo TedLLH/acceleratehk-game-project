@@ -13,7 +13,6 @@ class GameOverScreen{
 		}, 1500, "Linear", true, 0, -1);
 		tween.yoyo(true);
 	}
-
 	startGame(){
 		game.state.start("PlayGame");
 	}
