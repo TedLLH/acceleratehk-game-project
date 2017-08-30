@@ -12,8 +12,6 @@ const TRANSPARENT_SPEED = 200;
 
 // let transparent 
 
-
-
 class PlayGame{
 
 	create(){
@@ -186,9 +184,10 @@ class Fan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
 
 	//randomise fan positions
-	let fanPositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
+	let fanFactor = (game.width - 440) / 2 + 211.2
+	let fanPositions = [Math.floor(Math.random() * (fanFactor - 150) + 150), Math.floor(Math.random() * (fanFactor - 150) + 150)];
 	let fanPosition = game.rnd.between(0, 1);
-	super(game, fanPositions[fanPosition], -100, "fan");
+	super(game, fanPositions[fanPosition], -250, "fan");
 	this.playGame = playGame;
 
 	//enable phaser ARCADE physics
@@ -203,7 +202,7 @@ constructor(game, speed, playGame) {
 	update(){
 		if(this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
-			this.playGame.addFan(this.parent, "Fan");
+			this.playGame.addFan(this.parent, "fan");
 		}
 
 		if(this.y > game.height){
@@ -217,9 +216,10 @@ class blowLeftFan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
 
 	//randomise blow left fan positions
-	let blowLeftFanPositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
+	let blowLeftFanFactor = (game.width - 440) / 2 + 211.2
+	let blowLeftFanPositions = [Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150, Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150];
 	let blowLeftFanPosition = game.rnd.between(0, 1);
-	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "fan");
+	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "blowLeftFan");
 	this.playGame = playGame;
 
 	//enable phaser ARCADE physics
@@ -234,8 +234,8 @@ constructor(game, speed, playGame) {
 	update(){
 		if(this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
-			this.playGame.addFan(this.parent, "blowLeftFan");
-		}
+			this.playGame.addBlowLeftFan(this.parent, "blowLeftFan");
+		} 
 
 		if(this.y > game.height){
 			this.destroy();
@@ -246,7 +246,7 @@ constructor(game, speed, playGame) {
 // hole class
 class Hole extends Phaser.Sprite{
 	constructor(game, speed, playGame){
-		let holePositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
+		let holePositions = [Math.floor(Math.random() * (540 - 100)) + 100, Math.floor(Math.random() * (540 - 100)) + 100];
 		let holePosition = game.rnd.between(0,1);
 		super(game, holePositions[holePosition], -100, "hole");
 		this.playGame = playGame;
