@@ -10,6 +10,8 @@ const FAN_GAP = 300;
 const FAN_SPEED = 200;
 const TRANSPARENT_SPEED = 200;
 
+let resultScore = 0;
+console.log(resultScore);
 // let transparent 
 
 class PlayGame{
@@ -56,11 +58,48 @@ class PlayGame{
 		this.blowLeftFanGroup = game.add.group();
 		this.addBlowLeftFan(this.blowLeftFanGroup, "blowLeftFan");
 
+		//timer
+        var me = this;
+
+        me.startTime = new Date();
+        me.createTimer();
+        me.gameTimer = game.time.events.loop(100, function(){
+            me.updateTimer();
+        });
+
 		this.cursors = game.input.keyboard.createCursorKeys();
 		//sorting all obstacles in array for convenience
 		document.getElementById("all").style.cursor = "none";
-
 	}
+
+	updateTimer(){
+        var me = this;
+
+        var currentTime = new Date();
+        var timeDifference = me.startTime.getTime() - currentTime.getTime();
+
+        //Time elapsed in seconds
+        me.timeElapsed = Math.abs(timeDifference / 1000)
+
+        //Time elapsed in minutes and seconds
+        var minutes = Math.floor(me.timeElapsed / 60);
+        var seconds = Math.floor(me.timeElapsed) - (60 * minutes);
+
+        //Displaying time to put a "0" before 10 minutes/seconds
+        resultScore = (minutes < 10) ? "0" + minutes : minutes;
+        resultScore += (seconds < 10) ? ":0" + seconds : ":" + seconds;
+
+		me.timeLabel.text = resultScore;
+		console.log(resultScore);
+	}
+	
+	createTimer(){
+        var me = this;
+
+        me.timeLabel = me.game.add.text(me.game.world.centerX, 30, "00:00", {font: "50px Arial", fill: "#fff"});
+        me.timeLabel.anchor.setTo(0.5,0);
+        me.timeLabel.align = 'center';
+    }
 	
 	update(){
 		
@@ -102,6 +141,9 @@ class PlayGame{
 					explosionEmitter.maxParticleScale = 2;
 					explosionEmitter.start(true, 2000, null, 200);
 					this.ship.destroy();
+					var me = this;
+                    me.game.time.events.remove(me.gameTimer);
+                    me.game.time.reset(me.gameTimer);
 					game.time.events.add(Phaser.Timer.SECOND * 2, function() {
 						game.state.start("GameOverScreen");
 					});
@@ -187,7 +229,7 @@ constructor(game, speed, playGame) {
 	let fanFactor = (game.width - 440) / 2 + 211.2
 	let fanPositions = [Math.floor(Math.random() * (fanFactor - 150) + 150), Math.floor(Math.random() * (fanFactor - 150) + 150)];
 	let fanPosition = game.rnd.between(0, 1);
-	super(game, fanPositions[fanPosition], -250, "fan");
+	super(game, fanPositions[fanPosition], -180, "fan");
 	this.playGame = playGame;
 
 	//enable phaser ARCADE physics
@@ -202,7 +244,7 @@ constructor(game, speed, playGame) {
 	update(){
 		if(this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
-			this.playGame.addFan(this.parent, "fan");
+			this.playGame.addFan(this.parent, "blowLeftFan");
 		}
 
 		if(this.y > game.height){
@@ -219,7 +261,7 @@ constructor(game, speed, playGame) {
 	let blowLeftFanFactor = (game.width - 440) / 2 + 211.2
 	let blowLeftFanPositions = [Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150, Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150];
 	let blowLeftFanPosition = game.rnd.between(0, 1);
-	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "blowLeftFan");
+	super(game, blowLeftFanPositions[blowLeftFanPosition], -500, "blowLeftFan");
 	this.playGame = playGame;
 
 	//enable phaser ARCADE physics
