@@ -112,6 +112,12 @@ class PlayGame{
 	
 	update(){
 		
+		if(this.ship.x < 130){
+			this.cursors.left.isDown = false;
+		}
+		if(this.ship.x > 500){
+			this.cursors.right.isDown = false;
+		}
 		if (this.cursors.left.isDown) {
 			this.ship.body.x -= 6;
 		}
