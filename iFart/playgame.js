@@ -12,7 +12,7 @@ const BLOW_LEFT_FAN_SPEED = 300;
 const BLOW_LEFT_FAN_GAP = 300;
 const FUEL_DISPENSER_SPEED = 300;
 const FUEL_DISPENSER_GAP = 170;
-const BARRIER_SPEED = 2;
+const BARRIER_INCREASE_SPEED = 1.2;
 
 let resultScore = 0;
 // let transparent 
@@ -157,7 +157,7 @@ class PlayGame{
 					});
 				}, this);
 			}, null, this)
-		}	
+		}
 			//ship hit blowright fan
 			if(game.physics.arcade.overlap(this.fanGroup, this.ship))
 			{
@@ -181,20 +181,22 @@ class PlayGame{
 			let holeGroup = this.holeGroup;
 			let fanGroup = this.fanGroup;
 			let blowLeftFanGroup = this.blowLeftFanGroup;
+			let that = this;
 			//let fuelDipenserGroup = this.fuelDispenserGroup;
+			
 			this.fuelDispenserGroup.forEach(function(a) {
 				game.physics.arcade.overlap(a, ship,function() {
-					let holeSpeed = HOLE_SPEED;
-					let fanSpeed = FAN_SPEED;
-					let blowLeftFanSpeed = BLOW_LEFT_FAN_SPEED;
-					let fuelDispenserSpeed = FUEL_DISPENSER_SPEED;
-					holeSpeed *= BARRIER_SPEED;
+					let holeSpeed = that.holeSpeed;
+					let fanSpeed = that.fanSpeed;
+					let blowLeftFanSpeed = that.blowLeftFanSpeed;
+					let fuelDispenserSpeed = that.fuelDispenserSpeed;
+					holeSpeed *= BARRIER_INCREASE_SPEED;
 					console.log(holeSpeed);
-					fanSpeed *= BARRIER_SPEED;
+					fanSpeed *= BARRIER_INCREASE_SPEED;
 					console.log(fanSpeed);
-					blowLeftFanSpeed *= BARRIER_SPEED;
-					console.log(blowLeftFanGroup);
-					fuelDispenserSpeed *= BARRIER_SPEED;
+					blowLeftFanSpeed *= BARRIER_INCREASE_SPEED;
+					console.log(blowLeftFanSpeed);
+					fuelDispenserSpeed *= BARRIER_INCREASE_SPEED;
 					console.log(fuelDispenserSpeed);
 					for(let i = 0; i < holeGroup.length; i++){
 						holeGroup.getChildAt(i).body.velocity.y = holeSpeed;
@@ -205,9 +207,11 @@ class PlayGame{
 					for(let i = 0; i < blowLeftFanGroup.length; i++){
 						blowLeftFanGroup.getChildAt(i).body.velocity.y = blowLeftFanSpeed;
 					}
-					//for(let i = 0; i < fuelDispenserGroup.length; i++){
-					//	fuelDispenserGroup.getChildAt(i).body.velocity.y = this.fuelDispenserSpeed;
-					//}
+					for(let i = 0; i < that.fuelDispenserGroup.length; i++){
+						that.fuelDispenserGroup.getChildAt(i).body.velocity.y = fuelDispenserSpeed;
+					}
+
+					that.increaseItemsSpeed();
 					a.kill();
 				})
 			})
@@ -239,26 +243,36 @@ class PlayGame{
         //         }, 200, Phaser.Easing.Linear.None, true);
 		// 	}, null, this)
 	} //update closing bracket
+	increaseItemsSpeed(){
+		this.holeSpeed *= BARRIER_INCREASE_SPEED;
+		console.log(this.holeSpeed);
+		this.fanSpeed *= BARRIER_INCREASE_SPEED;
+		console.log(this.fanSpeed);
+		this.blowLeftFanSpeed *= BARRIER_INCREASE_SPEED;
+		console.log(this.blowLeftFanSpeed);
+		this.fuelDispenserSpeed *= BARRIER_INCREASE_SPEED;
+		console.log(this.fuelDispenserSpeed);
+	}
 	addBlowLeftFan(group){
-		let blowleftfan = new BlowLeftFan(game, FAN_SPEED, this);
+		let blowleftfan = new BlowLeftFan(game, this.blowLeftFanSpeed, this);
 		game.add.existing(blowleftfan);
 		group.add(blowleftfan);
 		blowleftfan.scale.setTo(0.1,0.1);
 	}
 	addFan(group){
-		let fan = new Fan(game, FAN_SPEED, this);
+		let fan = new Fan(game, this.fanSpeed, this);
 		game.add.existing(fan);
 		group.add(fan);
 		fan.scale.setTo(0.1,0.1);
 	}
 	addHole(group){
-		let hole = new Hole(game, HOLE_SPEED, this);
+		let hole = new Hole(game, this.holeSpeed, this);
 		game.add.existing(hole);
 		group.add(hole);
 		hole.scale.setTo(0.3,0.3);
 	}
 	addFuelDispenser(group){
-		let fuelDispenser = new FuelDispenser(game, FUEL_DISPENSER_SPEED, this);
+		let fuelDispenser = new FuelDispenser(game, this.fuelDispenserSpeed, this);
 		game.add.existing(fuelDispenser);
 		group.add(fuelDispenser);
 		fuelDispenser.scale.setTo(0.1,0.1);
