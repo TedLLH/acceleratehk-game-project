@@ -5,11 +5,11 @@ const SHIP_VERTICAL_SPEED = 0;
 const SHIP_INCREASE_SPEED = 2;
 const SWIPE_DISTANCE = 10;
 const HOLE_SPEED = 300;
-const HOLE_GAP = 100;
-const FAN_GAP = 300;
+const HOLE_GAP = 170;
+const FAN_GAP = 630;
 const FAN_SPEED = 300;
 const BLOW_LEFT_FAN_SPEED = 300;
-const BLOW_LEFT_FAN_GAP = 300;
+const BLOW_LEFT_FAN_GAP = 500;
 const FUEL_DISPENSER_SPEED = 300;
 const FUEL_DISPENSER_GAP = 170;
 const BARRIER_INCREASE_SPEED = 1.2;
@@ -110,20 +110,22 @@ class PlayGame{
     }
 	
 	update(){
-		
-		if (this.cursors.left.isDown) {
-			this.ship.body.x -= 6;
+		if(this.ship.x < 510){
+			if (this.cursors.right.isDown) {
+				this.ship.body.x += 6;
+			}
 		}
-		if (this.cursors.right.isDown) {
-			this.ship.body.x += 6;
+		if(this.ship.x > 140){
+			if (this.cursors.left.isDown) {
+				this.ship.body.x -= 6;
+			}
 		}
 		if (this.cursors.up.isDown) {
 			this.ship.body.y -= 6;
 		}
 		if (this.cursors.down.isDown) {
-			this.ship.body.y += 6;
+				this.ship.body.y += 6;
 		}
-
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
 		this.background.tilePosition.y += 10;
@@ -296,7 +298,7 @@ constructor(game, speed, playGame) {
 
 	//randomise fan positions
 	let fanFactor = (game.width - 440) / 2 + 211.2
-	let fanPositions = [Math.floor(Math.random() * (fanFactor - 150) + 150), Math.floor(Math.random() * (fanFactor - 150) + 150)];
+	let fanPositions = [Math.floor(Math.random() * (fanFactor - 170) + 170), Math.floor(Math.random() * (fanFactor - 170) + 170)];
 	let fanPosition = game.rnd.between(0, 1);
 	super(game, fanPositions[fanPosition], -180, "fan");
 	this.playGame = playGame;
@@ -328,7 +330,7 @@ constructor(game, speed, playGame) {
 
 	//randomise blow left fan positions
 	let blowLeftFanFactor = (game.width - 440) / 2 + 211.2
-	let blowLeftFanPositions = [Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150, Math.floor(Math.random() * (blowLeftFanFactor - 150)) + 150];
+	let blowLeftFanPositions = [Math.floor(Math.random() * (blowLeftFanFactor - 170)) + 170, Math.floor(Math.random() * (blowLeftFanFactor - 170)) + 170];
 	let blowLeftFanPosition = game.rnd.between(0, 1);
 	super(game, blowLeftFanPositions[blowLeftFanPosition], -500, "blowLeftFan");
 	this.playGame = playGame;
@@ -382,7 +384,7 @@ class Hole extends Phaser.Sprite{
 // fuel dispenser class
 class FuelDispenser extends Phaser.Sprite{
 	constructor(game, speed, playGame){
-		let fuelDispenserPositions = [Math.floor(Math.random() * (540 - 100)) + 100, Math.floor(Math.random() * (540 - 100)) + 100];
+		let fuelDispenserPositions = [Math.floor(Math.random() * (540 - 150)) + 150, Math.floor(Math.random() * (540 - 150)) + 150];
 		let fuelDispenserPosition = game.rnd.between(0,1);
 		super(game, fuelDispenserPositions[fuelDispenserPosition], -500, "fuelDispenser");
 		this.playGame = playGame;
