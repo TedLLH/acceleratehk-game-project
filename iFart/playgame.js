@@ -193,44 +193,44 @@ class PlayGame{
 			
 			switch (true) {
 				case game.physics.arcade.overlap(holeGroup, fanGroup, function(h, f){
-					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					holeGroup.children[holeGroup.getIndex(h)].x  = game.rnd.between(100, 440);
 					console.log("holegroup destroy with fangroup")
 					console.log("fangroup destroyed with hole group, ", fanGroup.getIndex(f))
-					fanGroup.children[fanGroup.getIndex(f)].destroy();}):
+					fanGroup.children[fanGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 				break;
 
 				case game.physics.arcade.overlap(holeGroup, fuelDispenserGroup, function(h, f){
-					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					holeGroup.children[holeGroup.getIndex(h)].x = game.rnd.between(100, 440);
 					console.log("holegroup destroy with fuel group")
-					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].destroy();}):
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 					console.log("fule group destroy with holegroup")
 				break;
 
 				case game.physics.arcade.overlap(holeGroup, blowLeftFanGroup, function(h, f){
-					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					holeGroup.children[holeGroup.getIndex(h)].x  = game.rnd.between(100, 440);
 					console.log("holegroup destroy with left fan group")
-					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 					console.log("blow left fan destroy with hole group")
 				break;
 
 				case game.physics.arcade.overlap(fanGroup, fuelDispenserGroup, function(h, f){
 					console.log("fangroup = fuel group", fanGroup.getIndex(h))
-					fanGroup.children[fanGroup.getIndex(h)].destroy();
-					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].destroy();}):
+					fanGroup.children[fanGroup.getIndex(h)].x  = game.rnd.between(100, 440);
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 					console.log("fuel group to fangroup")
 				break;
 				
 				case game.physics.arcade.overlap(fanGroup, blowLeftFanGroup, function(h, f){
 					console.log("fangroup = blowleftfan", fanGroup.getIndex(h))
-					fanGroup.children[fanGroup.getIndex(h)].destroy();
-					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					fanGroup.children[fanGroup.getIndex(h)].x  = game.rnd.between(100, 440);
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 					console.log("blowleftgroup = fangroup")
 				break;
 				
 				case game.physics.arcade.overlap(fuelDispenserGroup, blowLeftFanGroup, function(h, f){
-					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(h)].destroy();
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(h)].x  = game.rnd.between(100, 440);
 					console.log("fuel group = blowleft")
-					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].x  = game.rnd.between(100, 440);}):
 					console.log("blowleft = fuel group")
 				break;
 			}
@@ -362,7 +362,8 @@ constructor(game, speed, playGame) {
 	this.body.immovable = true;
 };
 	update(){
-		if(this.placeFan && this.y > FAN_GAP){
+		if((this.placeFan && this.y > FAN_GAP) || this.kill === true){
+			console.log('diu')
 			this.placeFan = false;
 			this.playGame.addFan(this.parent, "blowLeftFan");
 		}
