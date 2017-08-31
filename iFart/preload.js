@@ -18,6 +18,7 @@ class Preload{
 		game.load.image("box", "assets/sprites/barrier.png");
 		game.load.image("export", "assets/sprites/export.png");
 		game.load.image("blowLeftFan", "assets/sprites/blowleft.png")
+		game.load.image("fuelDispenser", "assets/sprites/fueldispenser.png")
 	}
 	
 	create(){

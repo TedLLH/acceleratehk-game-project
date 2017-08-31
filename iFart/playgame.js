@@ -2,16 +2,19 @@ const TUNNEL_WIDTH = 640;
 const SHIP_HORIZONTAL_SPEED = 100;
 const SHIP_MOVE_DELAY = 0;
 const SHIP_VERTICAL_SPEED = 0;
+const SHIP_INCREASE_SPEED = 2;
 const SWIPE_DISTANCE = 10;
-const HOLE_SPEED = 200;
-const BARRIER_INCREASE_SPEED = 1.1;
+const HOLE_SPEED = 300;
 const HOLE_GAP = 100;
 const FAN_GAP = 300;
-const FAN_SPEED = 200;
-const TRANSPARENT_SPEED = 200;
+const FAN_SPEED = 300;
+const BLOW_LEFT_FAN_SPEED = 300;
+const BLOW_LEFT_FAN_GAP = 300;
+const FUEL_DISPENSER_SPEED = 300;
+const FUEL_DISPENSER_GAP = 170;
+const BARRIER_SPEED = 2;
 
 let resultScore = 0;
-console.log(resultScore);
 // let transparent 
 
 class PlayGame{
@@ -54,7 +57,13 @@ class PlayGame{
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
 
+		//fuel dispenser properties (blowright)
+		this.fuelDispenserSpeed = FUEL_DISPENSER_SPEED;
+		this.fuelDispenserGroup = game.add.group();
+		this.addFuelDispenser(this.fuelDispenserGroup, "fuelDispenser");
+
 		////fan properties (blowleft)
+		this.blowLeftFanSpeed = BLOW_LEFT_FAN_SPEED;
 		this.blowLeftFanGroup = game.add.group();
 		this.addBlowLeftFan(this.blowLeftFanGroup, "blowLeftFan");
 
@@ -90,7 +99,6 @@ class PlayGame{
         resultScore += (seconds < 10) ? ":0" + seconds : ":" + seconds;
 
 		me.timeLabel.text = resultScore;
-		console.log(resultScore);
 	}
 	
 	createTimer(){
@@ -118,7 +126,7 @@ class PlayGame{
 
 		this.smokeEmitter.x = this.ship.x;
 		this.smokeEmitter.y = this.ship.y + 70;
-		this.background.tilePosition.y += 8;
+		this.background.tilePosition.y += 10;
 		
 		var obstacle = [this.holeGroup];
 
@@ -156,7 +164,7 @@ class PlayGame{
 				let moveTween = game.add.tween(this.ship).to({
 					x: this.ship.x + 100,
 					//y: this.ship.y,
-				}, 1000, Phaser.Easing.Linear.None, true);
+				}, 50, Phaser.Easing.Linear.None, true);
 			}
 
 			//ship hit blowleft fan
@@ -165,8 +173,49 @@ class PlayGame{
 				let moveTween = game.add.tween(this.ship).to({
 					x: this.ship.x - 100,
 					//y: this.ship.y,
-				}, 1000, Phaser.Easing.Linear.None, true);
+				}, 50, Phaser.Easing.Linear.None, true);
 			}
+
+			//ship hit fuel dispenser
+			let ship = this.ship;
+			let holeGroup = this.holeGroup;
+			let fanGroup = this.fanGroup;
+			let blowLeftFanGroup = this.blowLeftFanGroup;
+			//let fuelDipenserGroup = this.fuelDispenserGroup;
+			this.fuelDispenserGroup.forEach(function(a) {
+				game.physics.arcade.overlap(a, ship,function() {
+					let holeSpeed = HOLE_SPEED;
+					let fanSpeed = FAN_SPEED;
+					let blowLeftFanSpeed = BLOW_LEFT_FAN_SPEED;
+					let fuelDispenserSpeed = FUEL_DISPENSER_SPEED;
+					holeSpeed *= BARRIER_SPEED;
+					console.log(holeSpeed);
+					fanSpeed *= BARRIER_SPEED;
+					console.log(fanSpeed);
+					blowLeftFanSpeed *= BARRIER_SPEED;
+					console.log(blowLeftFanGroup);
+					fuelDispenserSpeed *= BARRIER_SPEED;
+					console.log(fuelDispenserSpeed);
+					for(let i = 0; i < holeGroup.length; i++){
+						holeGroup.getChildAt(i).body.velocity.y = holeSpeed;
+					}
+					for(let i = 0; i < fanGroup.length; i++){
+						fanGroup.getChildAt(i).body.velocity.y = fanSpeed;
+					}
+					for(let i = 0; i < blowLeftFanGroup.length; i++){
+						blowLeftFanGroup.getChildAt(i).body.velocity.y = blowLeftFanSpeed;
+					}
+					//for(let i = 0; i < fuelDispenserGroup.length; i++){
+					//	fuelDispenserGroup.getChildAt(i).body.velocity.y = this.fuelDispenserSpeed;
+					//}
+					a.kill();
+				})
+			})
+			/* if(game.physics.arcade.overlap(this.fuelDispenserGroup, this.ship))
+			{
+				this.ship.speed = 2;
+				this.fuelDispenserGroup.destroy();
+			} */
 
 		/*
 		game.physics.arcade.collide(this.ship, obstacle, function(){
@@ -189,9 +238,9 @@ class PlayGame{
         //             y: this.ship.y - 20,
         //         }, 200, Phaser.Easing.Linear.None, true);
 		// 	}, null, this)
-	}
+	} //update closing bracket
 	addBlowLeftFan(group){
-		let blowleftfan = new blowLeftFan(game, FAN_SPEED, this);
+		let blowleftfan = new BlowLeftFan(game, FAN_SPEED, this);
 		game.add.existing(blowleftfan);
 		group.add(blowleftfan);
 		blowleftfan.scale.setTo(0.1,0.1);
@@ -207,6 +256,12 @@ class PlayGame{
 		game.add.existing(hole);
 		group.add(hole);
 		hole.scale.setTo(0.3,0.3);
+	}
+	addFuelDispenser(group){
+		let fuelDispenser = new FuelDispenser(game, FUEL_DISPENSER_SPEED, this);
+		game.add.existing(fuelDispenser);
+		group.add(fuelDispenser);
+		fuelDispenser.scale.setTo(0.1,0.1);
 	}
 
 	updateScore(){
@@ -254,7 +309,7 @@ constructor(game, speed, playGame) {
 }
 
 //blow left fan class
-class blowLeftFan extends Phaser.Sprite{
+class BlowLeftFan extends Phaser.Sprite{
 constructor(game, speed, playGame) {
 
 	//randomise blow left fan positions
@@ -274,7 +329,7 @@ constructor(game, speed, playGame) {
 	this.body.immovable = true;
 };
 	update(){
-		if(this.placeFan && this.y > FAN_GAP){
+		if(this.placeFan && this.y > BLOW_LEFT_FAN_GAP){
 			this.placeFan = false;
 			this.playGame.addBlowLeftFan(this.parent, "blowLeftFan");
 		} 
@@ -298,7 +353,6 @@ class Hole extends Phaser.Sprite{
 		this.placeHole = true;
 		this.body.immovable = true;
 	};
-
 	update(){
 		if(this.placeHole && this.y > HOLE_GAP){
 			this.placeHole = false;
@@ -311,29 +365,32 @@ class Hole extends Phaser.Sprite{
 	}
 }
 
-// class Transparent extends Phaser.Sprite{
-// 	constructor(game, speed, playGame){
-// 		let transparentPositions = (fanPositions[fanPosition]);
-// 		super(game, transparentPositions, -100, "transparent");
-// 		this.playGame = playGame;
-// 		game.physics.enable(this, Phaser.Physics.ARCADE);
-// 		this.anchor.set(0.5);
-// 		this.body.velocity.y = speed;
-// 		this.placeTransparent = true;
-// 		this.body.immovable = true;
-// 	}
+// fuel dispenser class
+class FuelDispenser extends Phaser.Sprite{
+	constructor(game, speed, playGame){
+		let fuelDispenserPositions = [Math.floor(Math.random() * (540 - 100)) + 100, Math.floor(Math.random() * (540 - 100)) + 100];
+		let fuelDispenserPosition = game.rnd.between(0,1);
+		super(game, fuelDispenserPositions[fuelDispenserPosition], -500, "fuelDispenser");
+		this.playGame = playGame;
+		game.physics.enable(this, Phaser.Physics.ARCADE);
+		this.anchor.set(0.5);
+		this.body.velocity.y = speed;
+		this.placeFuelDispenser = true;
+	};
+	update(){
+		if(this.placeFuelDispenser && this.y > FUEL_DISPENSER_GAP){
+			this.placeFuelDispenser = false;
+			this.playGame.addFuelDispenser(this.parent, "fuelDispenser");
+		}
+		if(this.y > game.height){
+			this.destroy();
+		}	
+		if(game.physics.arcade.overlap(this, this.ship)){
+			this.destroy();
+		}
+	}
+}
 
-// 	update(){
-// 		if(this.placeHole && this.y > BARRIER_GAP){
-// 			this.placeHole = false;
-// 			this.playGame.addHole(this.parent, "hole");
-// 		}
-
-// 		if(this.y > game.height){
-// 			this.destroy();
-// 		}
-// 	}
-// }
 // We need to create a 5 column system which will randomly generate whether it's a fan or a hole.
 // This system is better because it makes gameplay more structured: prevents overlapping, ...
 /*
