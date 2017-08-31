@@ -53,10 +53,13 @@ class PlayGame{
 		this.fanSpeed = FAN_SPEED;
 		this.fanGroup = game.add.group();
 		this.addFan(this.fanGroup, "fan");
+		//var blow = this.fanGroup.animations.add('blow');
+		//this.fanGroup.animations.play('blow', 5, true);
+
 
 		////fan properties (blowleft)
 		this.blowLeftFanGroup = game.add.group();
-		this.addBlowLeftFan(this.blowLeftFanGroup, "blowLeftFan");
+		this.addBlowLeftFan(this.blowLeftFanGroup, "blowleftfan");
 
 		this.cursors = game.input.keyboard.createCursorKeys();
 		//sorting all obstacles in array for convenience
@@ -99,7 +102,7 @@ class PlayGame{
 
 			//ship hit blowright fan
 			if(game.physics.arcade.overlap(this.fanGroup, this.ship))
-			{
+			{	console.log("testing");
 				let moveTween = game.add.tween(this.ship).to({
 					x: this.ship.x + 100,
 					//y: this.ship.y,
@@ -156,12 +159,18 @@ class PlayGame{
 		game.add.existing(blowleftfan);
 		group.add(blowleftfan);
 		blowleftfan.scale.setTo(0.1,0.1);
+
+		var blowl = blowleftfan.animations.add("blowl");
+		blowleftfan.animations.play("blowl", 10, true);
 	}
 	addFan(group){
 		let fan = new Fan(game, FAN_SPEED, this);
 		game.add.existing(fan);
 		group.add(fan);
 		fan.scale.setTo(0.1,0.1);
+
+		var blow = fan.animations.add("blow");
+		fan.animations.play("blow", 10, true);
 	}
 	addHole(group){
 		let hole = new Hole(game, HOLE_SPEED, this);
@@ -200,6 +209,8 @@ constructor(game, speed, playGame) {
 
 	//make fan image not movable upon collision
 	this.body.immovable = true;
+
+
 };
 	update(){
 		if(this.placeFan && this.y > FAN_GAP){
@@ -220,7 +231,7 @@ constructor(game, speed, playGame) {
 	//randomise blow left fan positions
 	let blowLeftFanPositions = [Math.floor(Math.random() * (600 - 100)) + 100, Math.floor(Math.random() * (600 - 100)) + 100];
 	let blowLeftFanPosition = game.rnd.between(0, 1);
-	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "fan");
+	super(game, blowLeftFanPositions[blowLeftFanPosition], -100, "blowleftfan");
 	this.playGame = playGame;
 
 	//enable phaser ARCADE physics
@@ -235,7 +246,7 @@ constructor(game, speed, playGame) {
 	update(){
 		if(this.placeFan && this.y > FAN_GAP){
 			this.placeFan = false;
-			this.playGame.addFan(this.parent, "blowLeftFan");
+			this.playGame.addFan(this.parent, "blowleftfan");
 		}
 
 		if(this.y > game.height){
