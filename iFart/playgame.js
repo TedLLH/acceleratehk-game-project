@@ -14,6 +14,7 @@ const FUEL_DISPENSER_SPEED = 300;
 const FUEL_DISPENSER_GAP = 170;
 const BARRIER_INCREASE_SPEED = 1.2;
 
+
 let resultScore = 0;
 // let transparent 
 
@@ -177,14 +178,58 @@ class PlayGame{
 					//y: this.ship.y,
 				}, 50, Phaser.Easing.Linear.None, true);
 			}
-
+			
 			//ship hit fuel dispenser
 			let ship = this.ship;
 			let holeGroup = this.holeGroup;
 			let fanGroup = this.fanGroup;
 			let blowLeftFanGroup = this.blowLeftFanGroup;
+			let fuelDispenserGroup = this.fuelDispenserGroup;
 			let that = this;
-			//let fuelDipenserGroup = this.fuelDispenserGroup;
+			
+			switch (true) {
+				case game.physics.arcade.overlap(holeGroup, fanGroup, function(h, f){
+					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					console.log("holegroup destroy with fangroup")
+					console.log("fangroup destroyed with hole group, ", fanGroup.getIndex(f))
+					fanGroup.children[fanGroup.getIndex(f)].destroy();}):
+				break;
+
+				case game.physics.arcade.overlap(holeGroup, fuelDispenserGroup, function(h, f){
+					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					console.log("holegroup destroy with fuel group")
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].destroy();}):
+					console.log("fule group destroy with holegroup")
+				break;
+
+				case game.physics.arcade.overlap(holeGroup, blowLeftFanGroup, function(h, f){
+					holeGroup.children[holeGroup.getIndex(h)].destroy();
+					console.log("holegroup destroy with left fan group")
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					console.log("blow left fan destroy with hole group")
+				break;
+
+				case game.physics.arcade.overlap(fanGroup, fuelDispenserGroup, function(h, f){
+					console.log("fangroup = fuel group", fanGroup.getIndex(h))
+					fanGroup.children[fanGroup.getIndex(h)].destroy();
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(f)].destroy();}):
+					console.log("fuel group to fangroup")
+				break;
+				
+				case game.physics.arcade.overlap(fanGroup, blowLeftFanGroup, function(h, f){
+					console.log("fangroup = blowleftfan", fanGroup.getIndex(h))
+					fanGroup.children[fanGroup.getIndex(h)].destroy();
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					console.log("blowleftgroup = fangroup")
+				break;
+				
+				case game.physics.arcade.overlap(fuelDispenserGroup, blowLeftFanGroup, function(h, f){
+					fuelDispenserGroup.children[fuelDispenserGroup.getIndex(h)].destroy();
+					console.log("fuel group = blowleft")
+					blowLeftFanGroup.children[blowLeftFanGroup.getIndex(f)].destroy();}):
+					console.log("blowleft = fuel group")
+				break;
+			}
 			
 			this.fuelDispenserGroup.forEach(function(a) {
 				game.physics.arcade.overlap(a, ship,function() {
@@ -359,7 +404,7 @@ constructor(game, speed, playGame) {
 // hole class
 class Hole extends Phaser.Sprite{
 	constructor(game, speed, playGame){
-		let holePositions = [Math.floor(Math.random() * (540 - 100)) + 100, Math.floor(Math.random() * (540 - 100)) + 100];
+		let holePositions = [Math.floor(Math.random() * (540 - 150)) + 150, Math.floor(Math.random() * (540 - 150)) + 150];
 		let holePosition = game.rnd.between(0,1);
 		super(game, holePositions[holePosition], -100, "hole");
 		this.playGame = playGame;
