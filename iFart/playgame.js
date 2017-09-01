@@ -329,7 +329,7 @@ class PlayGame{
 		let blowleftfan = new BlowLeftFan(game, this.blowLeftFanSpeed, this);
 		game.add.existing(blowleftfan);
 		group.add(blowleftfan);
-		blowleftfan.scale.setTo(0.2,0.2);
+		blowleftfan.scale.setTo(0.15,0.15);
 
 		var blowl = blowleftfan.animations.add("blowl");
 		blowleftfan.animations.play("blowl", 10, true);
@@ -338,7 +338,7 @@ class PlayGame{
 		let fan = new Fan(game, this.fanSpeed, this);
 		game.add.existing(fan);
 		group.add(fan);
-		fan.scale.setTo(0.2,0.2);
+		fan.scale.setTo(0.15,0.15);
 
 		var blow = fan.animations.add("blow");
 		fan.animations.play("blow", 10, true);
@@ -347,7 +347,7 @@ class PlayGame{
 		let hole = new Hole(game, this.holeSpeed, this);
 		game.add.existing(hole);
 		group.add(hole);
-		hole.scale.setTo(0.6,0.6);
+		hole.scale.setTo(0.45,0.45);
 	}
 	addFuelDispenser(group){
 		let fuelDispenser = new FuelDispenser(game, this.fuelDispenserSpeed, this);
