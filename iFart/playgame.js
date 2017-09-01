@@ -21,6 +21,8 @@ let resultScore = 0;
 class PlayGame{
 
 	create(){
+		this.bgMusic = game.add.audio("bgmusic");
+		this.bgMusic.loopFull(1);
 
 		this.background = game.add.tileSprite(0,0,game.width,game.height,"export");
 		console.log("playgame started");
@@ -166,6 +168,7 @@ class PlayGame{
 					rotation: 10
 				}, 1000, Phaser.Easing.Linear.None, true);
 				destroyTween.onComplete.add(function(){
+					this.bgMusic.stop();
 					let explosionEmitter = game.add.emitter(this.ship.x,
 						this.ship.y, 200);
 					explosionEmitter.makeParticles("smoke");

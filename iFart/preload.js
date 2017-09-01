@@ -25,6 +25,7 @@ class Preload{
 		game.load.image("fart", "assets/sprites/particle.png");
 		game.load.image("shy", "assets/sprites/surprise.png");
 		game.load.image("text", "assets/sprites/text.png");
+		game.load.audio("bgmusic", "assets/sprites/flight_of_the_bumblebee_2.mp3");
 	}
 	
 	create(){
