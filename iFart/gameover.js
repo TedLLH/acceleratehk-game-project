@@ -14,7 +14,7 @@ class GameOverScreen{
 		}, 1500, "Linear", true, 0, -1);
 		tween.yoyo(true);
 		
-		//document.getElementById("all").style.cursor = "pointer";
+		document.getElementById("all").style.cursor = "pointer";
 	}
 	startGame(){
 		game.state.start("PlayGame");

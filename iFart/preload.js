@@ -11,13 +11,13 @@ class Preload{
 		game.load.image("man", "assets/sprites/ship.png");
 		game.load.image("smoke", "assets/sprites/smoke3.png");
 		game.load.image("hole", "assets/sprites/hole.png");
-		game.load.image("fan", "assets/sprites/blowright.png");
+		game.load.spritesheet("fan", "assets/sprites/fansheet.png", 1100, 512, 4);
 		game.load.image("transparent", "assets/sprites/transparent.png");
 		game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
 		game.load.spritesheet("ship", "assets/sprites/man.png", 62, 90, 6);
 		game.load.image("box", "assets/sprites/barrier.png");
-		game.load.image("export", "assets/sprites/export.png");
-		game.load.image("blowLeftFan", "assets/sprites/blowleft.png")
+		game.load.image("export", "assets/sprites/trainbackground.png");
+		game.load.spritesheet("blowLeftFan", "assets/sprites/fansheetleft.png", 1100, 512, 4);
 		game.load.spritesheet("fuelDispenser", "assets/sprites/upspritesheet.png", 512, 512, 8);
 		game.load.image("background", "assets/sprites/background.png");
 		game.load.image("foreground", "assets/sprites/foreground.png");
