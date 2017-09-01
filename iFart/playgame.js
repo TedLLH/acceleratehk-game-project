@@ -5,7 +5,7 @@ const SHIP_VERTICAL_SPEED = 0;
 const SHIP_INCREASE_SPEED = 2;
 const SWIPE_DISTANCE = 10;
 const HOLE_SPEED = 300;
-const HOLE_GAP = 359;
+const HOLE_GAP = 277;
 const FAN_GAP = 457;
 const FAN_SPEED = 300;
 const BLOW_LEFT_FAN_SPEED = 300;
@@ -34,7 +34,7 @@ class PlayGame{
 		//make ship bounce to the edge
 		this.ship.body.collideWorldBounds = true;
 		//setting bounce energy level
-		this.ship.body.bounce.setTo(5,5);
+		this.ship.body.bounce.setTo(2,2);
 				
 		//ship animation
 		var walk = this.ship.animations.add('walk');
@@ -60,6 +60,13 @@ class PlayGame{
 		//var blow = this.fanGroup.animations.add('blow');
 		//this.fanGroup.animations.play('blow', 5, true);
 
+		//fart emitter and parameters
+		this.fanSmokeEmitter = game.add.emitter((this.fanGroup.x ), (this.fanGroup.y ));
+		this.fanSmokeEmitter.makeParticles("smoke");
+		this.fanSmokeEmitter.setXSpeed(-15, 15);
+		this.fanSmokeEmitter.setYSpeed(50, 150);
+		this.fanSmokeEmitter.setAlpha(0.5, 1);
+		this.fanSmokeEmitter.start(false, 1000, 40);
 
 		//fuel dispenser properties (blowright)
 		this.fuelDispenserSpeed = FUEL_DISPENSER_SPEED;
@@ -115,6 +122,14 @@ class PlayGame{
 	
 	update(){
 		
+		if(this.ship.x < 120){
+			this.ship.x = 120;
+		}
+
+		if(this.ship.x >540){
+			this.ship.x = 540;
+		}
+
 		if(this.ship.x < 130){
 			this.cursors.left.isDown = false;
 		}
@@ -185,7 +200,7 @@ class PlayGame{
 					//y: this.ship.y,
 				}, 50, Phaser.Easing.Linear.None, true);
 			}
-			
+
 			//ship hit fuel dispenser
 			let ship = this.ship;
 			let holeGroup = this.holeGroup;
@@ -336,15 +351,14 @@ class PlayGame{
 		game.add.existing(fuelDispenser);
 		group.add(fuelDispenser);
 		fuelDispenser.scale.setTo(0.1,0.1);
-
 		
 		var bulge = fuelDispenser.animations.add('bulge');
 		fuelDispenser.animations.play('bulge',8, true);
 	}
 
-	updateScore(){
-		if (this.shi){}
-	}
+	// updateScore(){
+	// 	if (this.shi){}
+	// }
 	// addTransparent(group){
 	// 	let transparent = new Transparent(game, TRANSPARENT_SPEED, this);
 	// 	game.add.existing(transparent);
@@ -373,8 +387,6 @@ constructor(game, speed, playGame) {
 
 	//make fan image not movable upon collision
 	this.body.immovable = true;
-
-
 };
 	update(){
 		if((this.placeFan && this.y > FAN_GAP) || this.destroy === true){
@@ -471,7 +483,6 @@ class FuelDispenser extends Phaser.Sprite{
 		}
 	}
 }
-
 // We need to create a 5 column system which will randomly generate whether it's a fan or a hole.
 // This system is better because it makes gameplay more structured: prevents overlapping, ...
 /*
