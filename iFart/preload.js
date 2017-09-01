@@ -10,7 +10,7 @@ class Preload{
 		game.load.image("wall", "assets/sprites/wall.png");
 		game.load.image("man", "assets/sprites/ship.png");
 		game.load.image("smoke", "assets/sprites/smoke3.png");
-		game.load.image("hole", "assets/sprites/hole.png");
+		game.load.image("hole", "assets/sprites/crack.png");
 		game.load.spritesheet("fan", "assets/sprites/fansheet.png", 1100, 512, 4);
 		game.load.image("transparent", "assets/sprites/transparent.png");
 		game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");

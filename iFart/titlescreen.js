@@ -25,7 +25,7 @@ class TitleScreen{
 			emitter.lifespan = 'zero';
 			emitter.start(true, 2000, null, 200);
 			sprite.loadTexture("shy", 5000, false);
-			game.time.events.add(3000, destroyEmitter, this);
+			game.time.events.add(3000, destroyEmitter, this); 
 
 			function destroyEmitter() {
 

@@ -117,7 +117,7 @@ class PlayGame{
 	createTimer(){
         var me = this;
 
-        me.timeLabel = me.game.add.text(me.game.world.centerX, 30, "00:00", {font: "50px Arial", fill: "#fff"});
+        me.timeLabel = me.game.add.text(me.game.world.centerX, 30, "00:00", {font: "50px Arial", fill: "#000000"});
         me.timeLabel.anchor.setTo(0.5,0);
         me.timeLabel.align = 'center';
     }
