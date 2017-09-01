@@ -63,6 +63,5 @@ class TitleScreen{
 		
 		spriteArrives.start();
 
-
 	}
 }
