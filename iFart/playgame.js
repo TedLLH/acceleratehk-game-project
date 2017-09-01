@@ -12,7 +12,7 @@ const BLOW_LEFT_FAN_SPEED = 300;
 const BLOW_LEFT_FAN_GAP = 331;
 const FUEL_DISPENSER_SPEED = 300;
 const FUEL_DISPENSER_GAP = 389;
-const BARRIER_INCREASE_SPEED = 1.2;
+const BARRIER_INCREASE_SPEED = 1.3;
 
 
 let resultScore = 0;
@@ -374,7 +374,7 @@ constructor(game, speed, playGame) {
 
 	//randomise fan positions
 	let fanFactor = (game.width - 440) / 2 + 211.2
-	let fanPositions = [Math.floor(Math.random() * (fanFactor - 150) + 150), Math.floor(Math.random() * (fanFactor - 150) + 150)];
+	let fanPositions = [Math.floor(Math.random() * (fanFactor - 150) + 180), Math.floor(Math.random() * (fanFactor - 150) + 180)];
 	let fanPosition = game.rnd.between(0, 1);
 	super(game, fanPositions[fanPosition], -557, "fan");
 	this.playGame = playGame;
@@ -438,7 +438,7 @@ class Hole extends Phaser.Sprite{
 	constructor(game, speed, playGame){
 		let holePositions = [Math.floor(Math.random() * (540 - 150)) + 150, Math.floor(Math.random() * (540 - 150)) + 150];
 		let holePosition = game.rnd.between(0,1);
-		super(game, holePositions[holePosition], -359, "hole");
+		super(game, holePositions[holePosition], -173, "hole");
 		this.playGame = playGame;
 		game.physics.enable(this, Phaser.Physics.ARCADE);
 		this.anchor.set(0.5);
