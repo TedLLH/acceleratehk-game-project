@@ -22,6 +22,9 @@ class Preload{
 		game.load.image("background", "assets/sprites/background.png");
 		game.load.image("foreground", "assets/sprites/foreground.png");
 		game.load.spritesheet("sprite", "assets/sprites/rightsprite.png", 52, 68, 7);
+		game.load.image("fart", "assets/sprites/particle.png");
+		game.load.image("shy", "assets/sprites/surprise.png");
+		game.load.image("text", "assets/sprites/text.png");
 	}
 	
 	create(){
