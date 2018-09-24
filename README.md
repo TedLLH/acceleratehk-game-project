@@ -1,6 +1,3 @@
 # acceleratehk-game-project
-suck
-suck 
-suck
 
-Ted made some changes too!
+A game project by using javascript phaser library.
